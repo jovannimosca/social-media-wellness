@@ -33,16 +33,19 @@ if __name__ == '__main__':
    # Manipulate the data:
    mentalHealthTags = ['mental[a-z ]*health', 'depress[a-z]*', 'anxiet[a-z]*']
    wellnessTags = ['[a-z ]*wellness[a-z ]*', '[a-z ]*health[a-z ]*', 'fitness', 'nutrition[a-z]*''sleep[a-z]*','mindful[a-z]*']
-   filtered = filterHashtags(ingested, mentalHealthTags)
+   filtered = filterHashtags(ingested, wellnessTags)
    print('Number of matching posts: ', len(filtered))
    filtered.to_csv('processed/relevant.csv')
    
    # Let's see statistics by year:
    #   It looks like the vast majority of data is from 2021, so let's limit to that:
-   grouped_by_year = filtered[filtered['publicationtime'].dt.year == 2021].groupby(pd.Grouper(key='publicationtime', freq='ME'))
-   print(grouped_by_year['id'].count())
+   grouped_by_month = filtered[filtered['publicationtime'].dt.year == 2021].groupby(pd.Grouper(key='publicationtime', freq='ME'))
+   relevantPerMonth = grouped_by_month.size().reset_index(name='count')
+   relevantPerMonth['month'] = relevantPerMonth['publicationtime'].dt.month_name()
+   # relevantPerMonth.drop(columns=['publicationtime'], inplace=True)
+   print(relevantPerMonth)
    
-   graph = grouped_by_year.size().plot(x='pub_month', kind='bar')
+   graph = relevantPerMonth.plot(x='month', y='count', kind='bar')
    plt.show()
    
    
