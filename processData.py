@@ -3,6 +3,7 @@
 import pandas as pd
 import numpy as np
 import regex as re
+import matplotlib.pyplot as plt
 
 def filterHashtags(df:pd.DataFrame, hashtags:list[str]) -> pd.DataFrame:
    """Filter a pandas DataFrame based on a list of hashtags which may contain regex.
@@ -24,16 +25,24 @@ def filterHashtags(df:pd.DataFrame, hashtags:list[str]) -> pd.DataFrame:
 
 if __name__ == '__main__':
    print('Reading from CSV...', end=' ')
-   rawData = pd.read_csv('data/bigboy.csv')
+   raw = pd.read_csv('data/bigboy.csv')
+   ingested = raw[['id', 'full_text', 'hashtags', 'reply_count', 'user_name', 'likes', 'publicationtime']].convert_dtypes()
+   ingested['publicationtime'] = pd.to_datetime(ingested['publicationtime'], format='%a %b %d %X %z %Y')
    print('Done')
    
    # Manipulate the data:
    mentalHealthTags = ['mental[a-z ]*health', 'depress[a-z]*', 'anxiet[a-z]*']
    wellnessTags = ['[a-z ]*wellness[a-z ]*', '[a-z ]*health[a-z ]*', 'fitness', 'nutrition[a-z]*''sleep[a-z]*','mindful[a-z]*']
-   filtered = filterHashtags(rawData, mentalHealthTags)
+   filtered = filterHashtags(ingested, mentalHealthTags)
    print('Number of matching posts: ', len(filtered))
    filtered.to_csv('processed/relevant.csv')
    
-   print()
+   # Let's see statistics by year:
+   #   It looks like the vast majority of data is from 2021, so let's limit to that:
+   grouped_by_year = filtered[filtered['publicationtime'].dt.year == 2021].groupby(pd.Grouper(key='publicationtime', freq='ME'))
+   print(grouped_by_year['id'].count())
+   
+   graph = grouped_by_year.size().plot(x='pub_month', kind='bar')
+   plt.show()
    
    
