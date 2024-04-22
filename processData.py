@@ -37,7 +37,7 @@ if __name__ == '__main__':
    
    # Manipulate the data:
    mentalHealthTags = ['mental[a-z ]*health', 'depress[a-z]*', 'anxiet[a-z]*']
-   wellnessTags = ['[a-z ]*wellness[a-z ]*', '[a-z ]*health[a-z ]*', r'fitness\d*', 'nutrition[a-z]*', 'sleep[a-z]*', 'mindful[a-z]*', r'diet\d*', ]
+   wellnessTags = ['[a-z ]*wellness[a-z ]*', '[a-z ]*health[a-z ]*', r'fitness\d*', 'nutrition[a-z]*', 'sleep[a-z]*', 'mindful[a-z]*', r'diet\d*', r'\d*workout\d*', 'HIIT', r'\d*fasting']
    filtered = filterHashtags(ingested, wellnessTags)
    print(f'Number of matching tweets: {len(filtered)} ({len(filtered)/len(ingested)*100:.2f}%)')
    
