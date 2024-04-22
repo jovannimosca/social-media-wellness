@@ -1,12 +1,13 @@
 #!/bin/python
 
 import pandas as pd
-import numpy as np
+# import numpy as np
 import regex as re
-import matplotlib.pyplot as plt
-from nltk import *
-from nltk.corpus import stopwords
-import string
+# import matplotlib.pyplot as plt
+# from nltk import *
+# from nltk.corpus import stopwords
+# import string
+# from wordcloud import WordCloud
 
 def filterHashtags(df:pd.DataFrame, hashtags:list[str]) -> pd.DataFrame:
    """Filter a pandas DataFrame based on a list of hashtags which may contain regex.
@@ -32,45 +33,16 @@ if __name__ == '__main__':
    ingested = raw[['id', 'full_text', 'hashtags', 'reply_count', 'user_name', 'likes', 'publicationtime']].convert_dtypes()
    ingested['publicationtime'] = pd.to_datetime(ingested['publicationtime'], format='%a %b %d %X %z %Y')
    print('Done')
+   print(f'Total number of tweets: {len(ingested)}')
    
    # Manipulate the data:
    mentalHealthTags = ['mental[a-z ]*health', 'depress[a-z]*', 'anxiet[a-z]*']
-   wellnessTags = ['[a-z ]*wellness[a-z ]*', '[a-z ]*health[a-z ]*', 'fitness', 'nutrition[a-z]*''sleep[a-z]*','mindful[a-z]*']
+   wellnessTags = ['[a-z ]*wellness[a-z ]*', '[a-z ]*health[a-z ]*', r'fitness\d*', 'nutrition[a-z]*', 'sleep[a-z]*', 'mindful[a-z]*', r'diet\d*', ]
    filtered = filterHashtags(ingested, wellnessTags)
-   print('Number of matching tweets: ', len(filtered))
-   
-   # Let's see statistics by year:
-   #   It looks like the vast majority of data is from 2021, so let's limit to that:
-   grouped_by_month = filtered[filtered['publicationtime'].dt.year == 2021].groupby(pd.Grouper(key='publicationtime', freq='ME'))
-   relevantPerMonth = grouped_by_month.size().reset_index(name='count')
-   relevantPerMonth['month'] = relevantPerMonth['publicationtime'].dt.month_name()
-   print(relevantPerMonth)
-   graph = relevantPerMonth.plot(x='month', y='count', kind='bar', figsize=(6, 8))
-   plt.savefig('img/relevantTweetsByMonth.png')
-   plt.title('Number of Relevant Tweets by Month')
-   # plt.show()
-   
-   # Tokenization:
-   tt = TweetTokenizer()
-   corpusTokens = set()
-   for tweet in filtered['full_text']:
-      for token in tt.tokenize(tweet):
-         token = token.lower()
-         if token not in stopwords.words('english') and token not in string.punctuation and not token.startswith('http') and not token.startswith('@'):
-            corpusTokens.add(token)
-            
-   # Stemming:
-   stemmer = PorterStemmer()
-   stems = [stemmer.stem(token) for token in corpusTokens]
-   
-   # Frequency:
-   wordlist = FreqDist(stems)
-   word_features = [w for (w, c) in wordlist.most_common(30)]
-   print('Top 30 Words: ', ", ".join(word_features))
-   topFreq = FreqDist(word_features)
-   topFreq.plot(title='Relevant Tweet Word Frequency')
-   plt.savefig('img/relevantWordFrequency.png')
+   print(f'Number of matching tweets: {len(filtered)} ({len(filtered)/len(ingested)*100:.2f}%)')
    
    # Save processed and filtered data:
+   ingested.to_csv('processed/cleaned.csv')
    filtered.to_csv('processed/relevant.csv')
+   print('Wrote data to processed/')
    
