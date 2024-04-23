@@ -5,7 +5,13 @@ from textblob import TextBlob
 df = pd.read_csv('data/bigboy.csv')
 
 # Define the keywords you want to analyze for sentiment
-keywords = ['mental health'] #deleting and adding keywords as I run the program to save time
+keywords = ['yoga', 'fresh air', 'medication[a-z]*', 
+            'vitamin[a-z]*', 'holistic[a-z]*', 'SSRIs', 
+            'treatment[a-z]*', 'therapy', 'self help', 
+            'self-help', 'cortisol', 'nature', 'natural', 
+            'social[a-z]*', 'creativ[a-z]*', 'social media', 
+            'news', 'alcohol', 'substance abuse', 'Lexapro', 
+            'Prozac', 'Cipralex']
 
 # Function to calculate sentiment polarity using TextBlob
 def calculate_sentiment(text):
