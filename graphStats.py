@@ -32,6 +32,7 @@ if __name__ == '__main__':
       nx.draw_networkx_nodes(G, pos=pos, node_color=clr, nodelist=nodes, node_size=50)
    nx.draw_networkx_edges(G, pos=pos)
    plt.tight_layout()
+   plt.subplots_adjust(top=0.15)
    plt.title('Hashtag Co-Occurrence Network')
    plt.savefig('img/hashtagsGraph.png')
 
