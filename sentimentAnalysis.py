@@ -5,13 +5,18 @@ from textblob import TextBlob
 df = pd.read_csv('data/bigboy.csv')
 
 # Define the keywords you want to analyze for sentiment
-keywords = ['yoga', 'fresh air', 'medication[a-z]*', 
-            'vitamin[a-z]*', 'holistic[a-z]*', 'SSRIs', 
-            'treatment[a-z]*', 'therapy', 'self help', 
-            'self-help', 'cortisol', 'nature', 'natural', 
-            'social[a-z]*', 'creativ[a-z]*', 'social media', 
-            'news', 'alcohol', 'substance abuse', 'Lexapro', 
-            'Prozac', 'Cipralex']
+keywords = ['fresh air', 'social media', 'creative', 'creativity', 
+            'natural', 'mindfulness', 'yoga', 'self care', 'vitamin[a-z]*', 
+            'socialize', 'wellness', 'fitness', 'holistic', 'pilate[a-z]*', 
+            'diet', 'medication', 'therapy', 'self help', 'alcohol', 
+            'substance abuse', 'ssri[a-z]*', 'news', 'prozac', 'counseling',
+              'cognitive behavioral therapy (cbt)', 'dialectical behavior therapy (dbt)',
+                'mindfulness-based stress reduction (mbsr)', 'acceptance and commitment therapy (act)', 
+                'medication management', 'psychiatric treatment', 'support groups', 'peer support',
+                  'lifestyle changes', 'exercise', 'nutrition', 'sleep hygiene', 'relaxation techniques', 
+                  'breathing exercises', 'meditation', 'art therapy', 'music therapy', 'dance therapy',
+                    'animal-assisted therapy', 'nature therapy', 'journaling', 'social support', 
+                    'mindfulness apps', 'virtual therapy platforms', 'online support communities', 'crisis hotlines', 'teletherapy']
 
 # Function to calculate sentiment polarity using TextBlob
 def calculate_sentiment(text):
